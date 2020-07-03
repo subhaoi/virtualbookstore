@@ -1,0 +1,320 @@
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <style>
+        .footer {
+           position: fixed;
+           left: 0;
+           bottom: 0;
+           width: 100%;
+        }
+        </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" onClick="showCatalogue()" >Home <span class="sr-only">(current)</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" onClick="manageBooks()">Manage Books</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" onClick="getCart()">Cart</a>
+                </li>
+            </ul>
+        </div>
+      </nav>
+    <div class="container-fluid">
+        <script>
+            function showDetails(bookid){
+                    $("#cardcontainer").hide(); 
+                    $("#detailscontainer").show();
+                    $("#bookadmincontainer").hide();
+                    url = "http://localhost:5000/book?bookId=" + bookid
+                    localStorage.setItem('currentbook',bookid)
+                    $.get(url, function(result, status, xhr){
+                        console.log(result);
+                        localStorage.setItem('booktitle', result["title"])
+                        localStorage.setItem('bookprice', result["price"])
+                        var detailscontainer = $('<div class="row"/>')
+                        detailscontainer.append(`<div class="col-sm-5">
+                                                    <img src="`+ result["cover"] + `" height="700">
+                                                </div>`);
+                        detailscontainer.append(`<div class="col-sm-7">
+                                                    <h2>`+ result["title"] + `</h2>
+                                                    <hr>
+                                                    <p>`+ result["description"] +` </p>
+                                                    <hr>
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <h4>Details</h4>
+                                                            <table class="table">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td scope="row">Author</td>
+                                                                        <td>`+ result["author"] + `</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Publisher</td>
+                                                                        <td>`+ result["publisher"] + `</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Price</td>
+                                                                        <td>`+ result["price"] + `</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <a id="`+ result["_id"] + `" class="btn btn-primary" onClick="addtoCart(this.id);" >Add to Cart</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>`);          
+                        
+                        $('#detailscontainer').html(detailscontainer);
+                    });
+            }
+            function showCatalogue(){
+                $("#cartcontainer").hide();
+                $("#bookadmincontainer").hide();
+                $("#detailscontainer").hide();
+                $.get("http://localhost:5000/books", function (result, status, xhr) {
+                    console.log(result)
+                    var data_length = result.length
+                    var cardcontainer = $('<div class="row" />')
+                    cardcontainer.append('<div class="col-sm-12"><h3>Books</h3></div>')
+                    for(var i = 0; i < data_length; i++){
+                        cardcontainer.append(`  <div class="col-sm-3">
+                                                    <div class="card" style="width: 18rem;">
+                                                        <img src="`+ result[i]["cover"] + `" class="card-img-top" alt="`+ result[i]["id"] + `">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">`+ result[i]["title"] + `</h5>
+                                                            <p class="card-text"> ₹ `+ result[i]["price"] + `</p>
+                                                            <a id="`+ result[i]["_id"] + `" class="btn btn-primary" onClick="showDetails(this.id);" >Get Details</a>
+                                                        </div>
+                                                    </div>
+                                                </div>`);
+                        
+                        }
+                    $('#cardcontainer').html(cardcontainer);
+                });    
+                $("#cardcontainer").show();
+
+            }
+            function manageBooks(){
+                $("#bookadmincontainer").show();
+                $("#cartcontainer").hide();
+                $("#cardcontainer").hide();
+                $("#detailscontainer").hide();
+                $.get("http://localhost:5000/books", function (result, status, xhr) {
+                    console.log(result);
+                        var data_length = result.length
+                        var bookadmincontainer = $('<div class="row" />')
+                        bookadmincontainer.append('<div class="col-sm-12"><h3>Current Books</h3></div>')
+                        var rowstring = ''
+                        for(var i = 0; i < data_length; i++){
+                            rowstring += (`
+                                                        <tr>
+                                                            <td>` + result[i]['title'] + `</td>
+                                                            <td>` + result[i]['author'] + `</td>
+                                                            <td>` + result[i]['publisher'] + `</td>
+                                                            <td>
+                                                            <a id=`+ result[i]['_id'] + ` class="btn btn-primary" onClick="removeBook(this.id);">
+                                                                Remove
+                                                            </a>
+                                                            </td>
+                                                        </tr>
+                                                `
+                                                );
+                            }
+                            bookadmincontainer.append(`<table class="table">
+                                                    <tr>
+                                                        <th>Name of Book</th>
+                                                        <th>Author</th>
+                                                        <th>Publisher</th>
+                                                    </tr>` + rowstring+ `</table>`)
+                        $('#bookadmincontainer').html(bookadmincontainer);
+                });
+            }
+            function removeBook(bookId){
+                console.log(bookId)
+                url = "http://localhost:5000/book?bookId=" + bookId
+
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    success: function(result) {
+                        console.log(result);
+                        $("#bookadmincontainer").hide();
+                url = "http://localhost:5000/books"
+                $.get(url, function(result, status, xhr){
+                        console.log(result);
+                        var data_length = result.length
+                        var bookadmincontainer = $('<div class="row" />')
+                        bookadmincontainer.append('<div class="col-sm-12"><h3>Current Books</h3></div>')
+                        var rowstring = ''
+                        for(var i = 0; i < data_length; i++){
+                            rowstring += (`
+                                                        <tr>
+                                                            <td>` + result[i]['title'] + `</td>
+                                                            <td>` + result[i]['author'] + `</td>
+                                                            <td>` + result[i]['publisher'] + `</td>
+                                                            <td>
+                                                            <a id=`+ result[i]['_id'] + ` class="btn btn-primary" onClick="removeBook(this.id);">
+                                                                Remove
+                                                            </a>
+                                                            </td>
+                                                        </tr>
+                                                `
+                                                );
+                            }
+                            bookadmincontainer.append(`<table class="table">
+                                                    <tr>
+                                                        <th>Name of Book</th>
+                                                        <th>Author</th>
+                                                        <th>Publisher</th>
+                                                    </tr>` + rowstring+ `</table>`)
+                        $('#bookadmincontainer').html(bookadmincontainer);
+                });
+                $("#bookadmincontainer").show();
+                } 
+                });
+                
+            }
+            function removeFromCart(cartId){
+                console.log(cartId)
+                url = "http://localhost:5000/cart?cartId=" + cartId
+
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    success: function(result) {
+                        console.log(result);
+                        $("#cartcontainer").hide();
+                url = "http://localhost:5000/carts"
+                $.get(url, function(result, status, xhr){
+                        console.log(result);
+                        var data_length = result.length
+                        var cartcontainer = $('<div class="row" />')
+                        cartcontainer.append('<div class="col-sm-12"><h3>Cart</h3></div>')
+                        var rowstring = ''
+                        for(var i = 0; i < data_length; i++){
+                            rowstring += (`
+                                                        <tr>
+                                                            <td>` + result[i]['title'] + `</td>
+                                                            <td>` + result[i]['count'] + `</td>
+                                                            <td>` + result[i]['price'] + `</td>
+                                                            <td>
+                                                            <a id=`+ result[i]['_id'] + ` class="btn btn-primary" onClick="removeFromCart(this.id);">
+                                                                Remove
+                                                            </a>
+                                                            </td>
+                                                        </tr>
+                                                `
+                                                );
+                            }
+                            cartcontainer.append(`<table class="table">
+                                                    <tr>
+                                                        <th>Name of Book</th>
+                                                        <th>Count</th>
+                                                        <th>Price</th>
+                                                    </tr>` + rowstring+ `</table>`)
+                        $('#cartcontainer').html(cartcontainer);
+                        
+                });
+                $("#cartcontainer").show();
+                    }
+                    
+                });
+                
+            }
+            function getCart(){
+                $("#cartcontainer").show();
+                $("#cardcontainer").hide();
+                $("#bookadmincontainer").hide();
+                $("#detailscontainer").hide();
+                url = "http://localhost:5000/carts"
+                $.get(url, function(result, status, xhr){
+                        console.log(result);
+                        var data_length = result.length
+                        var cartcontainer = $('<div class="row" />')
+                        cartcontainer.append('<div class="col-sm-12"><h3>Cart</h3></div>')
+                        var rowstring = ''
+                        for(var i = 0; i < data_length; i++){
+                            rowstring += (`
+                                                        <tr>
+                                                            <td>` + result[i]['title'] + `</td>
+                                                            <td>` + result[i]['count'] + `</td>
+                                                            <td>` + result[i]['price'] + `</td>
+                                                            <td>
+                                                            <a id=`+ result[i]['_id'] + ` class="btn btn-primary" onClick="removeFromCart(this.id);">
+                                                                Remove
+                                                            </a>
+                                                            </td>
+                                                        </tr>
+                                                `
+                                                );
+                            }
+                            cartcontainer.append(`<table class="table">
+                                                    <tr>
+                                                        <th>Name of Book</th>
+                                                        <th>Count</th>
+                                                        <th>Price</th>
+                                                    </tr>` + rowstring+ `</table>`)
+                        $('#cartcontainer').html(cartcontainer);
+                        
+                });
+            }
+            function addtoCart(bookid){
+                url = "http://localhost:5000/cart"
+                data = {"book_id":localStorage.getItem('currentbook'), "count":1, 
+                "title":localStorage.getItem('booktitle'),
+                "price":localStorage.getItem('bookprice') }
+                $.post(url, data,function(result, status, xhr){
+                        console.log(result);
+                });
+            }
+            $(document).ready(function () {
+                $("#detailscontainer").hide();
+                $.get("http://localhost:5000/books", function (result, status, xhr) {
+                    console.log(result)
+                    var data_length = result.length
+                    var cardcontainer = $('<div class="row" />')
+                    cardcontainer.append('<div class="col-sm-12"><h3>Books</h3></div>')
+                    for(var i = 0; i < data_length; i++){
+                        cardcontainer.append(`  <div class="col-sm-3">
+                                                    <div class="card" style="width: 18rem;">
+                                                        <img src="`+ result[i]["cover"] + `" class="card-img-top" alt="`+ result[i]["id"] + `">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">`+ result[i]["title"] + `</h5>
+                                                            <p class="card-text"> ₹ `+ result[i]["price"] + `</p>
+                                                            <a id="`+ result[i]["_id"] + `" class="btn btn-primary" onClick="showDetails(this.id);" >Get Details</a>
+                                                        </div>
+                                                    </div>
+                                                </div>`);
+                        
+                        }
+                    $('#cardcontainer').html(cardcontainer);
+                });    
+            });
+        </script>
+        <div id='cardcontainer'></div>
+        <div id='detailscontainer'></div>
+        <div id='cartcontainer'></div>
+        <div id='bookadmincontainer'></div>
+
+    </div>
+
+</body>
