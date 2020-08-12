@@ -10,8 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "body-parser-xml": "^2.0.0",
     "express": "^4.14.0",
     "mongodb": "^2.2.15",
-    "mongoose": "^4.7.2"
+    "mongoose": "^4.10.8",
+    "socket-io": "^1.0.0",
+    "stream-to": "^2.0.0",
+    "superagent": "^5.3.1",
+    "xml2js": "^0.4.23"
   }
 }
