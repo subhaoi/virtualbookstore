@@ -31,5 +31,5 @@ app.post('/search',(req,res)=>{
 
 
 app.listen(3000,()=>{
-    console.log("service is on!")
+    console.log('listening on port 3000');
 })

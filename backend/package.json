@@ -4,6 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "chat" : "node chatService/chatService.js",
+    "booksearch" : "node bookSearchService/bookSearchService.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Subhash",

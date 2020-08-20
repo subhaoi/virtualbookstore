@@ -4,14 +4,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <style>
-        .footer {
-           position: fixed;
-           left: 0;
-           bottom: 0;
-           width: 100%;
-        }
-        </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="assets/js.js"></script>
+    <link rel="stylesheet" href="assets/bookstore.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -39,6 +38,16 @@
       </nav>
     <div class="container-fluid">
         <script>
+            function openForm() {
+            document.getElementById("myForm").style.display = "block";
+            $("#chat").hide(); 
+            }
+
+            function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+            }
+        </script>
+        <script>
             function showDetails(bookid){
                     $("#cardcontainer").hide(); 
                     $("#detailscontainer").show();
@@ -46,7 +55,6 @@
                     url = "http://localhost:5000/book?bookId=" + bookid
                     localStorage.setItem('currentbook',bookid)
                     $.get(url, function(result, status, xhr){
-                        console.log(result);
                         localStorage.setItem('booktitle', result["title"])
                         localStorage.setItem('bookprice', result["price"])
                         var detailscontainer = $('<div class="row"/>')
@@ -90,11 +98,23 @@
                 $("#cartcontainer").hide();
                 $("#bookadmincontainer").hide();
                 $("#detailscontainer").hide();
+                $("#newbookcontainer").hide();
                 $.get("http://localhost:5000/books", function (result, status, xhr) {
                     console.log(result)
                     var data_length = result.length
                     var cardcontainer = $('<div class="row" />')
-                    cardcontainer.append('<div class="col-sm-12"><h3>Books</h3></div>')
+                    cardcontainer.append(`<div class="col-sm-9"><h3>Books</h3></div>
+                                            <div class="col-sm-3">
+                                                <label for="Hierarchy">Sort By</label>
+                                                <select name="hierarchy" id="hierarchy" value="" onchange="sortFunction()">
+                                                    <option value="none"></option>
+                                                    <option value="nameascending">Name Ascending</option>
+                                                    <option value="namedescending">Name Descending</option>
+                                                    <option value="priceascending">Price Ascending</option>
+                                                    <option value="pricedescending">Price Descending</option>
+                                                </select>
+                                                </div>
+                                        `)
                     for(var i = 0; i < data_length; i++){
                         cardcontainer.append(`  <div class="col-sm-3">
                                                     <div class="card" style="width: 18rem;">
@@ -113,11 +133,65 @@
                 $("#cardcontainer").show();
 
             }
+            function sortFunction(){
+                console.log($("#hierarchy").val())
+                $("#cartcontainer").hide();
+                $("#bookadmincontainer").hide();
+                $("#detailscontainer").hide();
+                $("#newbookcontainer").hide();
+                $.get("http://localhost:5000/sortBooks",{sort:$("#hierarchy").val()}, function (result, status, xhr) {
+                    console.log(result)
+                    var data_length = result.length
+                    var cardcontainer = $('<div class="row" />')
+                    cardcontainer.append(`<div class="col-sm-9"><h3>Books</h3></div>
+                                            <div class="col-sm-3">
+                                                <label for="Hierarchy">Sort By</label>
+                                                <select name="hierarchy" id="hierarchy" value="" onchange="sortFunction()">
+                                                    <option value="none"></option>
+                                                    <option value="nameascending">Name Ascending</option>
+                                                    <option value="namedescending">Name Descending</option>
+                                                    <option value="priceascending">Price Ascending</option>
+                                                    <option value="pricedescending">Price Descending</option>
+                                                </select>
+                                                </div>
+                                        `)
+                    for(var i = 0; i < data_length; i++){
+                        cardcontainer.append(`  <div class="col-sm-3">
+                                                    <div class="card" style="width: 18rem;">
+                                                        <img src="`+ result[i]["cover"] + `" class="card-img-top" alt="`+ result[i]["id"] + `">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">`+ result[i]["title"] + `</h5>
+                                                            <p class="card-text"> ₹ `+ result[i]["price"] + `</p>
+                                                            <a id="`+ result[i]["_id"] + `" class="btn btn-primary" onClick="showDetails(this.id);" >Get Details</a>
+                                                        </div>
+                                                    </div>
+                                                </div>`);
+                        
+                        }
+                    $('#cardcontainer').html(cardcontainer);
+                });    
+                $("#cardcontainer").show();
+
+            $("#hierarchy").change(function() { // Run this function when option selected
+                    let position = this.value;
+                    console.log(position);
+                    // if(position == "Staff") {
+                    //     api_login('usa'/*ADD OTHER ARUGMENTS HERE*/);
+                    // } else if(position == "Teacher") {
+                    //     api_login('france'/*ADD OTHER ARUGMENTS HERE*/);
+                    // } else if(position == "Student") {
+                    //     api_login('uk'/*ADD OTHER ARUGMENTS HERE*/);
+                    // } else {
+                    //     console.log("Stop/Don't run any API's");
+                    // }
+                    });
+                }
             function manageBooks(){
                 $("#bookadmincontainer").show();
                 $("#cartcontainer").hide();
                 $("#cardcontainer").hide();
                 $("#detailscontainer").hide();
+                $("#newbookcontainer").hide();
                 $.get("http://localhost:5000/books", function (result, status, xhr) {
                     console.log(result);
                         var data_length = result.length
@@ -145,7 +219,71 @@
                                                         <th>Author</th>
                                                         <th>Publisher</th>
                                                     </tr>` + rowstring+ `</table>`)
+
+                            bookadmincontainer.append(`<a class='btn btn-primary' onClick="openBookSearch();">Request new books</a>`)
                         $('#bookadmincontainer').html(bookadmincontainer);
+                });
+            }
+
+            function openBookSearch(){
+                $('#bookadmincontainer').hide();
+                $("#newbookcontainer").show();
+                var newbookcontainer = $('<div class="container" />')
+                    newbookcontainer.append(`
+                                            <h3>Request New Books</h3>`)
+                    newbookcontainer.append(`<form onsubmit='searchNewBooks()' action=''>
+                                            <input type="text" id="searchbox" placeholder="Search for the topics"></input>
+                                            <input hidden type="submit">
+                                            </form>
+                                            `)
+                    newbookcontainer.append(`</div>
+                                            `)
+                $('#newbookcontainer').html(newbookcontainer);
+            }
+
+            function searchNewBooks(){
+                        event.preventDefault()
+                        console.log($("#searchbox").val())
+                        var data = {"text": $("#searchbox").val()}
+                        $.post('http://localhost:3000/search', data,function(result, status, xhr){
+                                console.log(result.data.books);
+                                var books = result.data.books
+                                var data_length = books.length
+                                var newbookcontainer = $('<div class="container" />')
+                                newbookcontainer.append(`
+                                                        <h3>Request New Books</h3>`)
+                                newbookcontainer.append(`<form onsubmit='searchNewBooks()' action=''>
+                                                        <input type="text" id="searchbox" placeholder="Search for the topics"></input>
+                                                        <input hidden type="submit">
+                                                        </form>
+                                                        `)
+                                newbookcontainer.append(`</div>
+                                                        `)
+                                var aftersearchcontainer =  $('<div class="row" />')
+                                aftersearchcontainer.append('<div class="col-sm-12"><h3>Books</h3></div>')
+                                for(var i = 0; i < data_length; i++){
+                                    aftersearchcontainer.append(`  <div class="col-sm-3">
+                                                                <div class="card" style="width: 18rem;">
+                                                                    <img src="`+ books[i]["image"] + `" class="card-img-top" alt="`+ books[i]["isbn13"] + `">
+                                                                    <div class="card-body">
+                                                                        <h5 class="card-title">`+ books[i]["title"] + `</h5>
+                                                                        <p class="card-text"> ₹ `+ parseInt(books[i]["price"].replace("$",""))* 70 + `</p>
+                                                                        <a id="`+ books[i]["isbn13"] + `" class="btn btn-primary" onClick="addToBookStore(this.id);" >Add to Bookstore</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`);
+                                    
+                            }
+                            newbookcontainer.append(aftersearchcontainer)
+                            $('#newbookcontainer').html(newbookcontainer);
+                        });
+                    }
+            function addToBookStore(id){
+                console.log(id)
+                url = "http://localhost:5000/book"
+                data = {"isbn":id }
+                $.post(url, data,function(result, status, xhr){
+                        console.log(result);
                 });
             }
             function removeBook(bookId){
@@ -288,33 +426,39 @@
             }
             $(document).ready(function () {
                 $("#detailscontainer").hide();
-                $.get("http://localhost:5000/books", function (result, status, xhr) {
-                    console.log(result)
-                    var data_length = result.length
-                    var cardcontainer = $('<div class="row" />')
-                    cardcontainer.append('<div class="col-sm-12"><h3>Books</h3></div>')
-                    for(var i = 0; i < data_length; i++){
-                        cardcontainer.append(`  <div class="col-sm-3">
-                                                    <div class="card" style="width: 18rem;">
-                                                        <img src="`+ result[i]["cover"] + `" class="card-img-top" alt="`+ result[i]["id"] + `">
-                                                        <div class="card-body">
-                                                            <h5 class="card-title">`+ result[i]["title"] + `</h5>
-                                                            <p class="card-text"> ₹ `+ result[i]["price"] + `</p>
-                                                            <a id="`+ result[i]["_id"] + `" class="btn btn-primary" onClick="showDetails(this.id);" >Get Details</a>
-                                                        </div>
-                                                    </div>
-                                                </div>`);
-                        
-                        }
-                    $('#cardcontainer').html(cardcontainer);
-                });    
+                showCatalogue();
             });
         </script>
         <div id='cardcontainer'></div>
         <div id='detailscontainer'></div>
         <div id='cartcontainer'></div>
         <div id='bookadmincontainer'></div>
+        <div id='newbookcontainer'></div>
+        <button class="open-button" onclick="openForm()">Chat</button>
 
+            <div class="chat-popup" id="myForm">
+                <div class="form-container">
+                    <div class="nickname_container" id="nick">
+                        <p>Type your name</p>
+                        <form id="submit"><input type="text" id="nickname" /></form>
+                        <button type="button" id="namesubmit" class="btn">Send</button>
+                    </div>
+                    <div id="chat">
+                        <div class="menu">
+                            <div class="name" id="name">Alex</div>
+                            <div class="last" id="time">18:09</div>
+                        </div>
+                        <ol class="chat">
+                            
+                        </ol>
+                        <div id='bottom'></div>
+                        <input class="textarea" type="text" placeholder="Type here!" id="textarea" />
+                        <button type="submit" id="chatsubmit" class="btn">Send</button>
+                    </div>
+                    <!-- <button type="submit" class="btn">Send</button> -->
+                    <button type="button" class="btn cancel" id="close" onclick="closeForm()">Close</button>
+                </div>  
+            </div>
     </div>
 
 </body>
