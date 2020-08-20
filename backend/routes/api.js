@@ -2,6 +2,7 @@ var app = require('express')();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+var _ = require('underscore')
 const superagent = require('superagent')
 var Book = require('../models/bookModel');
 var Cart = require('../models/cartModel');
@@ -15,9 +16,21 @@ app.get('/books', function(req, res) {
 });
 
 app.get('/sortBooks', function(req, res) {
-	console.log(req.query.sort)
 	Book.find({}, function(err, books) {
 		if(err) throw err;
+		// console.log(books)
+		if(req.query.sort == "nameascending"){
+			books = _.sortBy(books, 'title');
+		}
+		else if(req.query.sort == "namedescending"){
+			books = _.sortBy(books, 'title').reverse()
+		}
+		else if(req.query.sort == "pricedescending"){
+			books = _.sortBy(books, 'price').reverse()
+		}
+		else if(req.query.sort == "priceascending"){
+			books = _.sortBy(books, 'price')
+		}
 		res.send(books);
 	});
 });
