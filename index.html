@@ -96,6 +96,7 @@
             }
             function showCatalogue(){
                 $("#cartcontainer").hide();
+                $("#sortcontainer").show();
                 $("#bookadmincontainer").hide();
                 $("#detailscontainer").hide();
                 $("#newbookcontainer").hide();
@@ -103,18 +104,6 @@
                     console.log(result)
                     var data_length = result.length
                     var cardcontainer = $('<div class="row" />')
-                    cardcontainer.append(`<div class="col-sm-9"><h3>Books</h3></div>
-                                            <div class="col-sm-3">
-                                                <label for="Hierarchy">Sort By</label>
-                                                <select name="hierarchy" id="hierarchy" value="" onchange="sortFunction()">
-                                                    <option value="none"></option>
-                                                    <option value="nameascending">Name Ascending</option>
-                                                    <option value="namedescending">Name Descending</option>
-                                                    <option value="priceascending">Price Ascending</option>
-                                                    <option value="pricedescending">Price Descending</option>
-                                                </select>
-                                                </div>
-                                        `)
                     for(var i = 0; i < data_length; i++){
                         cardcontainer.append(`  <div class="col-sm-3">
                                                     <div class="card" style="width: 18rem;">
@@ -135,6 +124,7 @@
             }
             function sortFunction(){
                 console.log($("#hierarchy").val())
+                $("#sortcontainer").show();
                 $("#cartcontainer").hide();
                 $("#bookadmincontainer").hide();
                 $("#detailscontainer").hide();
@@ -143,18 +133,7 @@
                     console.log(result)
                     var data_length = result.length
                     var cardcontainer = $('<div class="row" />')
-                    cardcontainer.append(`<div class="col-sm-9"><h3>Books</h3></div>
-                                            <div class="col-sm-3">
-                                                <label for="Hierarchy">Sort By</label>
-                                                <select name="hierarchy" id="hierarchy" value="" onchange="sortFunction()">
-                                                    <option value="none"></option>
-                                                    <option value="nameascending">Name Ascending</option>
-                                                    <option value="namedescending">Name Descending</option>
-                                                    <option value="priceascending">Price Ascending</option>
-                                                    <option value="pricedescending">Price Descending</option>
-                                                </select>
-                                                </div>
-                                        `)
+
                     for(var i = 0; i < data_length; i++){
                         cardcontainer.append(`  <div class="col-sm-3">
                                                     <div class="card" style="width: 18rem;">
@@ -171,25 +150,12 @@
                     $('#cardcontainer').html(cardcontainer);
                 });    
                 $("#cardcontainer").show();
-
-            $("#hierarchy").change(function() { // Run this function when option selected
-                    let position = this.value;
-                    console.log(position);
-                    // if(position == "Staff") {
-                    //     api_login('usa'/*ADD OTHER ARUGMENTS HERE*/);
-                    // } else if(position == "Teacher") {
-                    //     api_login('france'/*ADD OTHER ARUGMENTS HERE*/);
-                    // } else if(position == "Student") {
-                    //     api_login('uk'/*ADD OTHER ARUGMENTS HERE*/);
-                    // } else {
-                    //     console.log("Stop/Don't run any API's");
-                    // }
-                    });
                 }
             function manageBooks(){
                 $("#bookadmincontainer").show();
                 $("#cartcontainer").hide();
                 $("#cardcontainer").hide();
+                $("#sortcontainer").hide();
                 $("#detailscontainer").hide();
                 $("#newbookcontainer").hide();
                 $.get("http://localhost:5000/books", function (result, status, xhr) {
@@ -227,6 +193,7 @@
 
             function openBookSearch(){
                 $('#bookadmincontainer').hide();
+                $("#sortcontainer").hide();
                 $("#newbookcontainer").show();
                 var newbookcontainer = $('<div class="container" />')
                     newbookcontainer.append(`
@@ -381,6 +348,7 @@
             function getCart(){
                 $("#cartcontainer").show();
                 $("#cardcontainer").hide();
+                $("#sortcontainer").hide();
                 $("#bookadmincontainer").hide();
                 $("#detailscontainer").hide();
                 url = "http://localhost:5000/carts"
@@ -429,6 +397,24 @@
                 showCatalogue();
             });
         </script>
+        <div id="sortcontainer">
+            <div class="row">
+                <div class="col-sm-9">
+                    <h3>Books</h3>
+                </div>
+                <div class="col-sm-3">
+                    <label for="Hierarchy">Sort By</label>
+                    <select name="hierarchy" id="hierarchy" value="" onchange="sortFunction()">
+                        <option value="none"></option>
+                        <option value="nameascending">Name Ascending</option>
+                        <option value="namedescending">Name Descending</option>
+                        <option value="priceascending">Price Ascending</option>
+                        <option value="pricedescending">Price Descending</option>
+                    </select>
+                </div>
+            </div>
+            
+        </div>
         <div id='cardcontainer'></div>
         <div id='detailscontainer'></div>
         <div id='cartcontainer'></div>
