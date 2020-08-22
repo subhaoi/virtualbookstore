@@ -6,6 +6,7 @@ var _ = require('underscore')
 const superagent = require('superagent')
 var Book = require('../models/bookModel');
 var Cart = require('../models/cartModel');
+require('dotenv').config()
 
 app.get('/books', function(req, res) {
 
@@ -68,7 +69,7 @@ app.delete('/book', function(req, res) {
 
 app.post('/book', function(req, res) {
 	console.log(req.body.isbn)
-	var url = 'https://www.googleapis.com/books/v1/volumes?q=+isbn=' + req.body.isbn
+	var url = process.env.GOOGLE_BOOK_API + req.body.isbn
 	superagent
     .get(url)
     .end(function(err,output){

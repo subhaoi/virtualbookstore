@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 const superagent = require('superagent')
+require('dotenv').config()
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -17,7 +18,7 @@ app.get('/',(req,res)=>{
 app.post('/search',(req,res)=>{
     console.log(req.body.text)
     var books_json = {}
-    var url = 'https://api.itbook.store/1.0/search/' + req.body.text
+    var url = process.env.IT_BOOK_API + req.body.text
     superagent
     .get(url)
     .end(function(err,output){
