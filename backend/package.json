@@ -17,7 +17,7 @@
     "event-stream": "^4.0.1",
     "express": "^4.14.0",
     "mongodb": "^2.2.15",
-    "mongoose": "^4.10.8",
+    "mongoose": "^5.7.5",
     "request": "^2.88.2",
     "socket.io": "^2.3.0",
     "superagent": "^5.3.1",
