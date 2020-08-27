@@ -21,3 +21,4 @@ Just simply open the `index.html` file in your browser
  - Add new books on basis of user's search query - Implementing using streams and microservices
  - Open a chat in the webpage to speak with the customer support team - Implementation of sockets and microservices
  - Sort books on basis of their name and price - Transformation and sorting of data on basis of query parameters
+ - Using Environment Variable for storing APIs and DB details
