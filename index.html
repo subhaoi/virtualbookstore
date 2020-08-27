@@ -185,7 +185,7 @@
                 $.get("http://localhost:5000/books", function (result, status, xhr) {
                         var data_length = result.length
                         var bookadmincontainer = $('<div class="container" /><br><div class="row" /><br>')
-                        bookadmincontainer.append('<div class="col-sm-12"><h3>Current Books</h3></div>')
+                        bookadmincontainer.append('<div class="col-sm-12"><h3>Current Inventory</h3></div>')
                         var rowstring = ''
                         for(var i = 0; i < data_length; i++){
                             rowstring += (`
@@ -417,6 +417,7 @@
             &nbsp;
             <div class="row">
                 <div class="col-sm-10">
+                    <h3>Books</h3>
                 </div>
                 <div class="col-sm-2">
                     <label for="Hierarchy">Sort By</label>
