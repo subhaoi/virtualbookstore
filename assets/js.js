@@ -1,3 +1,5 @@
+// Handles the actions and interactions in the floating chat box
+
 $(document).ready(function(){  
     var socket = io.connect("http://localhost:4000");
     var ready = false;

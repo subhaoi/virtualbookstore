@@ -1,3 +1,5 @@
+// Book Search Service - Receives a search query from the frontend and searches for the books using IT_BOOK_API
+
 const app = require('express')();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());

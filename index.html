@@ -1,20 +1,43 @@
+<!-- Single Page Web Application created using HTML, CSS and JQuery -->
+<!-- 
+    
+    Containers
+        cardcontainer - Used to render all the books available in the store
+        detailscontainer - Used to render the details of the selected book
+        cartcontainer - Used to render the cart
+        bookadmincontainer - Used to render the book management view
+        newbookcontainer - Used to render the book search results
+        sortcontainer - Contains the sorting dropdown
+
+    Functions
+        showCatalogue - Displays the books available in the store in the cardcontainer
+        openForm - Opens the chat box and connects to the chat socket service
+        closeForm - Closes the chat box
+        showDetails - Show the details of the selected book, hides the cardcontainer and shows detailscontainer 
+        sortFunction - Sorts the books on basis of price or name and re-renders the cardcontainer
+        manageBooks - Opens the bookadmincontainer
+        openBookSearch - Gets initialized when you click Request New books in bookadmincontainer
+        searchNewBooks - Searches for books on basis of search query and renders them in the newbookcontainer
+        addToBookStore - Function to add selected book to the book store
+        removeBook - Remove book from the store, initialised in the bookadmincontainer
+        removeFromCart - Remve book from the cart
+        getCart - Retrieves the cart and renders it in the cartcontainer
+        addtoCart - Adds selected book to the cart
+ -->
 <head>
     <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bookstore.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    
-<!-- Google Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script src="assets/js.js"></script>
-    <link rel="stylesheet" href="assets/bookstore.css">
-
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +75,7 @@
         </script>
         <script>
             function showDetails(bookid){
+                // 
                     $("#cardcontainer").hide(); 
                     $("#sortcontainer").hide();
                     $("#detailscontainer").show();
@@ -113,8 +137,7 @@
                                                     <div class="card" style="width: 18rem;">
                                                         <img src="`+ result[i]["cover"] + `" class="card-img-top" alt="`+ result[i]["id"] + `"style="height:400px; ">
                                                         <div class="card-body">
-                                                            <p class="card-title">`+ result[i]["title"] + `</p>
-                                                            <p class="card-text"> ₹ `+ result[i]["price"] + `</p>
+                                                            <p class="card-text"> MRP - ₹ `+ result[i]["price"] + `</p>
                                                             <a id="`+ result[i]["_id"] + `" class="btn btn-primary" onClick="showDetails(this.id);" >Get Details</a>
                                                         </div>
                                                     </div>
@@ -141,8 +164,7 @@
                                                     <div class="card" style="width: 18rem;">
                                                         <img src="`+ result[i]["cover"] + `" class="card-img-top" alt="`+ result[i]["id"] + ` "style="height:400px;">
                                                         <div class="card-body">
-                                                            <p class="card-title">`+ result[i]["title"] + `</p>
-                                                            <p class="card-text"> ₹ `+ result[i]["price"] + `</p>
+                                                            <p class="card-text">MRP - ₹ `+ result[i]["price"] + `</p>
                                                             <a id="`+ result[i]["_id"] + `" class="btn btn-primary" onClick="showDetails(this.id);" >Get Details</a>
                                                         </div>
                                                     </div>
@@ -232,8 +254,7 @@
                                                                 <div class="card" style="width: 12rem;">
                                                                     <img src="`+ books[i]["image"] + `" class="card-img-top" alt="`+ books[i]["isbn13"] + `" "style="height:400px;">
                                                                     <div class="card-body">
-                                                                        <p class="card-title">`+ books[i]["title"] + `</p>
-                                                                        <p class="card-text"> ₹ `+ parseInt(books[i]["price"].replace("$",""))* 70 + `</p>
+                                                                        <p class="card-text"> MRP - ₹ `+ parseInt(books[i]["price"].replace("$",""))* 70 + `</p>
                                                                         <a id="`+ books[i]["isbn13"] + `" data-bookname="`+  books[i]["title"] + `" class="btn btn-primary" onClick='addToBookStore(this.id, this.dataset.bookname);' >Add to Bookstore</a>
                                                                     </div>
                                                                 </div>
@@ -435,7 +456,6 @@
                         <input class="textarea" type="text" placeholder="Type here!" id="textarea" />
                         <button type="submit" id="chatsubmit" class="btn">Send</button>
                     </div>
-                    <!-- <button type="submit" class="btn">Send</button> -->
                     <button type="button" class="btn cancel" id="close" onclick="closeForm()">Close</button>
                 </div>  
             </div>

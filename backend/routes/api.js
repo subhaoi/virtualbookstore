@@ -19,7 +19,6 @@ app.get('/books', function(req, res) {
 app.get('/sortBooks', function(req, res) {
 	Book.find({}, function(err, books) {
 		if(err) throw err;
-		// console.log(books)
 		if(req.query.sort == "nameascending"){
 			books = _.sortBy(books, 'title');
 		}

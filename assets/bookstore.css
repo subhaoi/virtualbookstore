@@ -198,3 +198,8 @@ input.textarea {
     color: rgba(255,255,255,0.6); 
     top: 30px;
 }
+
+.customnavbar{
+    color:#ffffff;
+    background-color: #1a1a1a;
+}
