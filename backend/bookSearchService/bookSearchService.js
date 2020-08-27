@@ -4,7 +4,9 @@ const app = require('express')();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-const superagent = require('superagent')
+var request = require('request')
+  , JSONStream = require('JSONStream')
+  , es = require('event-stream')
 require('dotenv').config()
 
 app.use(function(req, res, next) {
@@ -18,18 +20,19 @@ app.get('/',(req,res)=>{
 })
 
 app.post('/search',(req,res)=>{
-    console.log(req.body.text)
-    var books_json = {}
+    var books = []
     var url = process.env.IT_BOOK_API + req.body.text
-    superagent
-    .get(url)
-    .end(function(err,output){
-        console.log(output.body)
-        books_json = output.body
-        return res
+    request({url: url})
+  .pipe(JSONStream.parse('books.*'))
+  .pipe(es.mapSync(function (data) {
+    books.push(data)
+  })
+  .on('end',function(){
+      return res
         .status(200)
-        .json({ message: "Updated Succesfully", data: books_json });
-    })
+        .json({ message: "Updated Succesfully", data: {books:books} });
+  })
+  )
 })
 
 

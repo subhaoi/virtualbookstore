@@ -236,6 +236,7 @@
                         var data = {"text": $("#searchbox").val()}
                         $.post('http://localhost:3000/search', data,function(result, status, xhr){
                                 var books = result.data.books
+                                // console.log(result)
                                 var data_length = books.length
                                 var newbookcontainer = $('<div class="container" />')
                                 newbookcontainer.append(`<br>

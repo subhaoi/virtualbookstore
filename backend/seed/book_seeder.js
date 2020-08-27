@@ -2,7 +2,7 @@ var Book = require('../models/bookModel');
 require('dotenv').config()
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-mongoose.connect('process.env.DB_URL');
+mongoose.connect(process.env.DB_URL);
 
 var books = [
 		new Book({
