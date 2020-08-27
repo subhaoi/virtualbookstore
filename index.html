@@ -133,7 +133,7 @@
                     var data_length = result.length
                     var cardcontainer = $('<br><div class="row" />')
                     for(var i = 0; i < data_length; i++){
-                        cardcontainer.append(`  <div class="col-sm-2">
+                        cardcontainer.append(`  <div class="col-lg-2 col-md-4">
                                                     <div class="card" style="width: 18rem;">
                                                         <img src="`+ result[i]["cover"] + `" class="card-img-top" alt="`+ result[i]["id"] + `"style="height:400px; ">
                                                         <div class="card-body">
@@ -160,7 +160,7 @@
                     var cardcontainer = $('<br><div class="row" />')
 
                     for(var i = 0; i < data_length; i++){
-                        cardcontainer.append(`  <div class="col-sm-2">
+                        cardcontainer.append(`  <div class="col-lg-2 col-md-4">
                                                     <div class="card" style="width: 18rem;">
                                                         <img src="`+ result[i]["cover"] + `" class="card-img-top" alt="`+ result[i]["id"] + ` "style="height:400px;">
                                                         <div class="card-body">
@@ -251,7 +251,7 @@
                                 var aftersearchcontainer =  $('<br><div class="row" />')
                                 aftersearchcontainer.append('<div class="col-sm-12"><h3>Books</h3></div>')
                                 for(var i = 0; i < data_length; i++){
-                                    aftersearchcontainer.append(`  <div class="col-sm-2">
+                                    aftersearchcontainer.append(`  <div class="col-lg-2 col-md-4">
                                                                 <div class="card" style="width: 12rem;">
                                                                     <img src="`+ books[i]["image"] + `" class="card-img-top" alt="`+ books[i]["isbn13"] + `" "style="height:400px;">
                                                                     <div class="card-body">
